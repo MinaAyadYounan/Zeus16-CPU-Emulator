@@ -20,3 +20,25 @@ A 16-bit Harvard Architecture RISC CPU emulator and 4-stage pipeline simulator w
   - `MUL` (16-bit signed multiplication)
   - `DIV` (Signed division with `DIV by 0` returning `0xFFFF` / `-1`)
   - `REM` (Signed modulo with `REM by 0` returning operand `a`)
+
+---
+| **Testbench & Verification** | [`main.cpp`](./main.cpp), `*.hex` | Authored machine code test suites (`program.hex`, `program_halt.hex`) and automated simulator runner verifying 100% ISA compliance. |
+---
+## 🧪 Verification & Test Suites Summary
+The emulator is validated using two complementary machine-code test suites:
+### 1. Primary Functional Benchmark (`program.hex`)
+Tests the nominal instruction set end-to-end:
+- **Math & Logic:** `ADDI`, `ADD`, `MUL`, `SUB`, `OR`, `DIV`, `AND`, `ORI`, `ANDI`, `REM`.
+- **Signed Comparisons:** `SLT` ($5 < 21 \implies 1$), `SLTI` ($2 < 6 \implies 1$).
+- **Data Memory:** Memory writeback with `SW R5, 0(R0)` and restoration via `LW R5, 0(R0)`.
+- **Control Flow:** Backward loop branching with `BEQ` and forward jumping with `JAL` skipping dummy instructions.
+### 2. Edge-Case & Alignment Trap Benchmark (`program_halt.hex`)
+Validates hardware boundary rules and exception handling:
+- **Division by Zero:** `DIV R2, R1, R0` safely returns `0xFFFF` (`-1`) without crashing.
+- **Remainder by Zero:** `REM R3, R1, R0` safely returns dividend operand $a$ (`R1 = 25`).
+- **`JAL` Linkage:** `JAL R4, 4` saves sequential return address ($PC + 2 = 8$) into non-zero register `R4`.
+- **Strict Alignment Trap:** `SW R1, 1(R6)` attempts to store to unaligned odd address `17`, immediately halting the CPU (`HALTED = true`) and protecting subsequent instructions from executing.
+---
+
+## 📄 Documentation
+- [`Zeus16 CPU Emulator.pdf`](./Zeus16%20CPU%20Emulator.pdf) .
