@@ -22,7 +22,7 @@ private:
     uint16_t R[8];
     uint16_t PC;
     bool is_halted;
-
+    bool unknown_isa;
     vector<string> assembly_log;
     vector<uint16_t> pc_log;
 
@@ -31,6 +31,7 @@ private:
     Decoder decoder;
     Disassembler disassembler;
     ALU alu;
+    
 
 public:
 
@@ -42,13 +43,14 @@ public:
         for (int i = 0; i < 8; ++i) R[i] = 0;
         PC = 0;
         is_halted = false;
+        unknown_isa = false;
         assembly_log.clear();
         pc_log.clear();
         data_mem.memory_init();
     }
 
     bool halted() const { return is_halted; }
-
+    bool get_unknown_isa() const { return unknown_isa; }
     uint16_t get_reg(uint8_t idx) {
         if (idx == 0) return 0;
         if (idx < 8) return R[idx];
@@ -73,7 +75,12 @@ public:
 
         // --- 2. Decode ---
         Instruction inst = decoder.decode(raw_inst);
-
+      if (inst.unknown_isa) {
+            cout << "unknown isa" << endl;
+            unknown_isa = true;
+            is_halted = true;
+            return;
+        }
         // --- 3. Disassemble ---
         string asm_text = disassembler.disassemble(inst);
         assembly_log.push_back(asm_text);
@@ -131,7 +138,11 @@ public:
                     break;
                 }
                 default:
-                    break;
+                    cout << "unknown isa" << endl;
+                    unknown_isa = true;
+                    is_halted = true;
+                    return;
+
             }
         }
 
