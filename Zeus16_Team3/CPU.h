@@ -75,12 +75,6 @@ public:
 
         // --- 2. Decode ---
         Instruction inst = decoder.decode(raw_inst);
-      if (inst.unknown_isa) {
-            cout << "unknown isa" << endl;
-            unknown_isa = true;
-            is_halted = true;
-            return;
-        }
         // --- 3. Disassemble ---
         string asm_text = disassembler.disassemble(inst);
         assembly_log.push_back(asm_text);
