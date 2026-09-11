@@ -75,6 +75,13 @@ public:
 
         // --- 2. Decode ---
         Instruction inst = decoder.decode(raw_inst);
+        uint8_t r_reserved = (raw_inst >> 9) & 0x7;
+        if (inst.steering_bit == 0 && r_reserved != 0) {
+            cout << "unknown isa" << endl;
+            unknown_isa = true;
+            is_halted = true;
+            return;
+        }
         // --- 3. Disassemble ---
         string asm_text = disassembler.disassemble(inst);
         assembly_log.push_back(asm_text);
