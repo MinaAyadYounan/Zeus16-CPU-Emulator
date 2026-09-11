@@ -22,6 +22,7 @@ struct Instruction {
     bool mem_write;   // Does this instruction write to Data Memory (Sw)?
     bool is_branch;   // Is this a BEQ instruction?
     bool is_jump;     // Is this a JAL instruction?
+    bool unknown_isa = false;
 };
 
 #endif // INSTRUCTION_H
