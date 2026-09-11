@@ -10,7 +10,6 @@ class Decoder {
 public:
     Instruction decode(uint16_t raw) {
         Instruction inst;
-        inst.unknown_isa = false;
         inst.is_branch = false;
         inst.is_jump   = false;
 
